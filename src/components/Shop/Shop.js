@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Product from './Product';
 import Social from './Social';
 import CartProduct from './CartProduct';
@@ -20,8 +20,11 @@ export default function Shop() {
     ])
     const handleAddToCart=(id)=>{
         const cart=products.find(product=>product.id===id);
-        setShoppingCart(prevCart=>[...prevCart,cart]);        
-        
+        setShoppingCart(prevCart => {
+            const updatedCart = [...prevCart, cart];
+            localStorage.setItem('shoppingCart', JSON.stringify(updatedCart));
+            return updatedCart;
+        });
     }
 
     const EmptyCart=()=>{
@@ -31,57 +34,63 @@ export default function Shop() {
         console.log(id);
         const newCart=shoppingCart.filter(item=>item.id!==id);
         setShoppingCart(newCart)
+        //delete item of cart from local storage
+        localStorage.setItem('shoppingCart', JSON.stringify(newCart));
+
     }
-  return (
+    //get item from local storage
+useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem('shoppingCart'));
+    if (storedCart) {
+        setShoppingCart(storedCart);
+    }
+}, []);
+
+return (
     <>
-         <header className="main-header">
-                    <nav className="main-nav nav">
-                        <ul>
-                            <li><a href="#">HOME</a></li>
-                            <li><a href="#">STORE</a></li>
-                            <li><a href="#">ABOUT</a></li>
-                        </ul>
-                    </nav>
-                    <h1 className="band-name band-name-large">DMSV Shop</h1>
-                </header>
-                <section className="container content-section">
-                    <div className="shop-items">
-                        {products.map(product=>(
-                        <Product key={product.id} {...product} handleAddToCart={(id)=>handleAddToCart(id)} />
-
-                        ))}
-                    </div>
-                </section>
-                <section className="container content-section">
-                    <h2 className="section-header">CART</h2>
-                    <div className="cart-row">
-                        <span className="cart-item cart-header cart-column">ITEM</span>
-                        <span className="cart-price cart-header cart-column">PRICE</span>
-                        <span className="cart-quantity cart-header cart-column">Doing</span>
-                    </div>
-                    <div className="cart-items">
-
-                        {shoppingCart.map(cart=>(
-                        <CartProduct key={cart.id} {...cart} handleRemoveItem={(id)=>handleRemoveItem(id)}/>
-
-                        ))}
-
-                    </div>
-                    <button className="btn btn-primary btn-purchase" type="button" onClick={EmptyCart}>
-                        Empty Cart
-                    </button>
-                </section>
-                <footer className="main-footer">
-                    <div className="container main-footer-container">
-                        <h3 className="band-name">The Generics</h3>
-                        <ul className="nav footer-nav">
-                            {socials.map(social=>(
-                            <Social key={social.id} {...social}/>
-
-                            ))}
-                        </ul>
-                    </div>
-                </footer>
+        <header className="main-header">
+            <nav className="main-nav nav">
+                <ul>
+                    <li><a href="#">HOME</a></li>
+                    <li><a href="#">STORE</a></li>
+                    <li><a href="#">ABOUT</a></li>
+                </ul>
+            </nav>
+            <h1 className="band-name band-name-large">DMSV Shop</h1>
+        </header>
+        <section className="container content-section">
+            <div className="shop-items">
+                {products.map(product => (
+                    <Product key={product.id} {...product} handleAddToCart={(id) => handleAddToCart(id)} />
+                ))}
+            </div>
+        </section>
+        <section className="container content-section">
+            <h2 className="section-header">CART</h2>
+            <div className="cart-row">
+                <span className="cart-item cart-header cart-column">ITEM</span>
+                <span className="cart-price cart-header cart-column">PRICE</span>
+                <span className="cart-quantity cart-header cart-column">Doing</span>
+            </div>
+            <div className="cart-items">
+                {shoppingCart.map(cart => (
+                    <CartProduct key={cart.id} {...cart} handleRemoveItem={(id) => handleRemoveItem(id)} />
+                ))}
+            </div>
+            <button className="btn btn-primary btn-purchase" type="button" onClick={EmptyCart}>
+                Empty Cart
+            </button>
+        </section>
+        <footer className="main-footer">
+            <div className="container main-footer-container">
+                <h3 className="band-name">The Generics</h3>
+                <ul className="nav footer-nav">
+                    {socials.map(social => (
+                        <Social key={social.id} {...social} />
+                    ))}
+                </ul>
+            </div>
+        </footer>
     </>
-    )
+)
 }

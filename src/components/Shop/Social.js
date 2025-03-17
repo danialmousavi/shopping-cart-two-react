@@ -1,14 +1,11 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-export default class Social extends Component {
-    render() {
-        console.log(this.props, 'props');
-        return (
-            <li>
-                <a href="sabzlearn.ir" target="_blank">
-                    <img src={this.props.image} alt="" />
-                </a>
-            </li>
-        )
-    }
+export default function Social({img}) {
+    return (
+        <li>
+        <a href="sabzlearn.ir" target="_blank">
+            <img src={img} />
+        </a>
+    </li>
+    )
 }

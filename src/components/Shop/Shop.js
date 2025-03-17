@@ -1,59 +1,40 @@
-import React, { Component } from 'react'
-import Product from './Product'
-import CartProduct from './CartProduct'
-import Social from './Social'
-import album1 from './images/Album1.png'
-import album2 from './images/Album2.png'
-import album3 from './images/Album3.png'
-import album4 from './images/Album4.png'
-import Cofee from './images/Cofee.png'
-import shirt from './images/Shirt.png'
-import youtube from './images/YoutubeLogo.png'
-import spotify from './images/SpotifyLogo.png'
-import faceBook from './images/FacebookLogo.png'
-export default class Shop extends Component {
+import React, { useState } from 'react'
+import Product from './Product';
+import Social from './Social';
+import CartProduct from './CartProduct';
 
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            products: [
-                { id: 1, title: 'Album 1', price: 5, img:album1 },
-                { id: 2, title: 'Album 2', price: 15, img: album2 },
-                { id: 3, title: 'Album 3', price: 20, img: album3 },
-                { id: 4, title: 'Album 4', price: 100, img:album4 },
-                { id: 5, title: 'Coffee', price: 5, img:Cofee },
-                { id: 6, title: 'Shirt', price: 50, img:shirt },
-            ],
-
-            shoppingCart: [],
-            socials: [
-                { id: 1, href: 'https://www.youtube.com', image:youtube },
-                { id: 2, href: 'https://www.spotify.com', image:spotify},
-                { id: 3, href: 'https://www.facebook.com', image:faceBook },
-            ],
-        }
-
-
+export default function Shop() {
+    const [products,setProducts]=useState([
+                { id: 1, title: 'Album 1', price: 5, img: '/images/Album1.png' },
+                { id: 2, title: 'Album 2', price: 15, img: '/images/Album2.png' },
+                { id: 3, title: 'Album 3', price: 20, img: '/images/Album3.png' },
+                { id: 4, title: 'Album 4', price: 100, img: '/images/Album4.png' },
+                { id: 5, title: 'Coffee', price: 5, img: '/images/Cofee.png' },
+                { id: 6, title: 'Shirt', price: 50, img: '/images/Shirt.png' },
+    ])
+    const [shoppingCart,setShoppingCart]=useState([]);
+    const [socials,setSocials]=useState([
+        { id: 1, href: 'https://www.youtube.com', img: '/images/YouTubeLogo.png' },
+        { id: 2, href: 'https://www.spotify.com', img: '/images/SpotifyLogo.png' },
+        { id: 3, href: 'https://www.facebook.com', img: '/images/YouTubeLogo.png' },
+    ])
+    const handleAddToCart=(id)=>{
+        const cart=products.find(product=>product.id===id);
+        setShoppingCart(prevCart=>[...prevCart,cart]);        
+        
     }
-    addToCartHandler(id){
-        let cart=this.state.products.find(product=>product.id===id);
-        this.setState((prevState)=>({
-            shoppingCart:[...prevState.shoppingCart,cart]
-        }));
+
+    const EmptyCart=()=>{
+        setShoppingCart([])
     }
-    removeFromCart(id){
+    const handleRemoveItem=(id)=>{
         console.log(id);
-        let removed=this.state.shoppingCart.filter(cart=>cart.id!==id);
-        this.setState({shoppingCart:removed});
+        const newCart=shoppingCart.filter(item=>item.id!==id);
+        setShoppingCart(newCart)
     }
-    removeAllHandler(){
-        this.setState({shoppingCart:[]})
-    }
-    render() {
-        return (
-            <>
-                <header className="main-header">
+  return (
+    <>
+         <header className="main-header">
                     <nav className="main-nav nav">
                         <ul>
                             <li><a href="#">HOME</a></li>
@@ -61,12 +42,13 @@ export default class Shop extends Component {
                             <li><a href="#">ABOUT</a></li>
                         </ul>
                     </nav>
-                    <h1 className="band-name band-name-large">SabzLearn Shop</h1>
+                    <h1 className="band-name band-name-large">DMSV Shop</h1>
                 </header>
                 <section className="container content-section">
                     <div className="shop-items">
-                        {this.state.products.map(product=>(
-                        <Product key={product.id} {...product} addTocart={(id)=>this.addToCartHandler(id)}/>
+                        {products.map(product=>(
+                        <Product key={product.id} {...product} handleAddToCart={(id)=>handleAddToCart(id)} />
+
                         ))}
                     </div>
                 </section>
@@ -78,13 +60,14 @@ export default class Shop extends Component {
                         <span className="cart-quantity cart-header cart-column">Doing</span>
                     </div>
                     <div className="cart-items">
-                        {this.state.shoppingCart.map(cart=>(
-                        <CartProduct key={cart.id} {...cart} removeHandler={(id)=>this.removeFromCart(id)}/>
+
+                        {shoppingCart.map(cart=>(
+                        <CartProduct key={cart.id} {...cart} handleRemoveItem={(id)=>handleRemoveItem(id)}/>
+
                         ))}
 
-
                     </div>
-                    <button className="btn btn-primary btn-purchase" type="button" onClick={()=>this.removeAllHandler()}>
+                    <button className="btn btn-primary btn-purchase" type="button" onClick={EmptyCart}>
                         Empty Cart
                     </button>
                 </section>
@@ -92,13 +75,13 @@ export default class Shop extends Component {
                     <div className="container main-footer-container">
                         <h3 className="band-name">The Generics</h3>
                         <ul className="nav footer-nav">
-                            {this.state.socials.map(social=>(
+                            {socials.map(social=>(
                             <Social key={social.id} {...social}/>
+
                             ))}
                         </ul>
                     </div>
                 </footer>
-            </>
-        )
-    }
+    </>
+    )
 }

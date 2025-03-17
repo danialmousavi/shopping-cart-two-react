@@ -1,23 +1,20 @@
 import React, { Component } from 'react'
-import img from './images/Shirt.png'
-export default class Product extends Component {
+export default function Product ({title,img,price,handleAddToCart,id}) {
     
-    render() {
         return (
             <div className="shop-item">
-                <span className="shop-item-title">{this.props.title}</span>
-                <img className="shop-item-image" src={this.props.img} />
+                <span className="shop-item-title">{title}</span>
+                <img className="shop-item-image" src={img} />
                 <div className="shop-item-details">
-                    <span className="shop-item-price">${this.props.price}</span>
+                    <span className="shop-item-price">${price}</span>
                     <button
                         className="btn btn-primary shop-item-button"
                         type="button"
-                        onClick={()=>this.props.addTocart(this.props.id)}
+                        onClick={()=>handleAddToCart(id)}
                         >
                         ADD TO CART
                     </button>
                 </div>
             </div>
         )
-    }
 }
